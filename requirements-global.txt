@@ -1,0 +1,29 @@
+# =============================================================================
+# IR System — Global Requirements
+# Install everything into one shared venv:
+#   pip install -r requirements-global.txt
+# =============================================================================
+
+# --- Web Framework ---
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+httpx>=0.27.0
+pydantic>=2.0.0
+
+# --- NLP / Preprocessing ---
+nltk>=3.8.1
+pyspellchecker>=0.8.1
+
+# --- IR Datasets ---
+ir-datasets>=0.5.5
+
+# --- Retrieval Models ---
+scikit-learn>=1.4.0
+rank-bm25>=0.2.2
+scipy>=1.13.0
+numpy>=1.26.0
+
+# --- Embeddings ---
+gensim>=4.3.0
+sentence-transformers>=2.7.0
+torch>=2.0.0          # required by sentence-transformers (CPU version is fine)
