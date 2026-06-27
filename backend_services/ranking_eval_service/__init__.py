@@ -1,1 +1,0 @@
-# Ranking & Evaluation Service package
