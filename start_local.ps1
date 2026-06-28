@@ -28,8 +28,7 @@ foreach ($svc in $services) {
 }
 
 Write-Host ""
-Write-Host "=== Waiting for services to start (45s for BERT/Word2Vec)... ===" -ForegroundColor Cyan
-Start-Sleep -Seconds 45
+Write-Host "=== Waiting for services to start (Models take time to load) ===" -ForegroundColor Cyan
 
 # Check ports
 function Check-Port {
@@ -37,8 +36,27 @@ function Check-Port {
     return Test-NetConnection -ComputerName localhost -Port $port -InformationLevel Quiet -WarningAction SilentlyContinue
 }
 
-Write-Host "=== Service Health Check ===" -ForegroundColor Cyan
-$all_up = $true
+$maxWaitSeconds = 180
+$waited = 0
+$all_up = $false
+
+while ($waited -lt $maxWaitSeconds -and -not $all_up) {
+    $all_up = $true
+    foreach ($svc in $services) {
+        if (-not (Check-Port $svc.Port)) {
+            $all_up = $false
+            break
+        }
+    }
+    
+    if (-not $all_up) {
+        Start-Sleep -Seconds 5
+        $waited += 5
+        Write-Host "Still waiting for models to load... ($waited/$maxWaitSeconds seconds)" -ForegroundColor Yellow
+    }
+}
+
+Write-Host "`n=== Service Health Check ===" -ForegroundColor Cyan
 foreach ($svc in $services) {
     if (Check-Port $svc.Port) {
         Write-Host "  OK   $($svc.Port) ($($svc.Name))" -ForegroundColor Green
